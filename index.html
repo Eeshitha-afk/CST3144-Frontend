@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title> SkillSpace </title>
@@ -8,13 +8,111 @@
 
     </head>
     <body>
+        <!-- The element where Vue will mount -->
         <div id="app">
-            <h1> SkillSpace </h1>
+            <header>
+                <h1>SkillSpace</h1>
+            </header>
+            <main>
+                <!-- Display each lesson from the list -->
+                <div v-for="lesson in lessons" v-bind:key="lesson.id">
+                    <h2>
+                        <span v-bind:class="lesson.icon" aria-hidden="true"></span>
+                        <span v-text="lesson.subject"></span>
+                    </h2>
+                    <p>Location: {{ lesson.location }}</p>
+                    <p>Price: AED {{ lesson.price }}</p>
+                    <p>Available Spaces: {{ lesson.spaces }}</p>
+                </div>
+            </main>
         </div>
         <script type="text/javascript">
-            new Vue({
+            let webstore = new Vue({ // The Vue instance
                 el: '#app',
                 data: {
+                    // Sample lessons for the will be replaced later with data from the backend
+                    lessons: [
+                        {
+                            id: 1001,
+                            subject: 'Mathematics',
+                            location: 'Dubai Knowledge Park',
+                            price: 100,
+                            spaces: 5,
+                            icon: 'fas fa-calculator'
+                        },
+                        {
+                            id: 1002,
+                            subject: 'English',
+                            location: 'Al Barsha',
+                            price: 80,
+                            spaces: 5,
+                            icon: 'fas fa-book'
+                        },
+                        {
+                            id: 1003,
+                            subject: 'Science',
+                            location: 'Dubai Marina',
+                            price: 120,
+                            spaces: 5,
+                            icon: 'fas fa-flask'
+                        },
+                        {
+                            id: 1004,
+                            subject: 'Coding',
+                            location: 'Dubai Knowledge Park',
+                            price: 150,
+                            spaces: 5,
+                            icon: 'fas fa-code'
+                        },
+                        {
+                            id: 1005,
+                            subject: 'Art',
+                            location: 'Jumeirah',
+                            price: 90,
+                            spaces: 5,
+                            icon: 'fas fa-palette'
+                        },
+                        {
+                            id: 1006,
+                            subject: 'Music',
+                            location: 'Al Barsha',
+                            price: 110,
+                            spaces: 5,
+                            icon: 'fas fa-music'
+                        },
+                        {
+                            id: 1007,
+                            subject: 'Photography',
+                            location: 'Dubai Marina',
+                            price: 130,
+                            spaces: 5,
+                            icon: 'fas fa-camera'
+                        },
+                        {
+                            id: 1008,
+                            subject: 'Chess',
+                            location: 'Jumeirah',
+                            price: 70,
+                            spaces: 5,
+                            icon: 'fas fa-chess'
+                        },
+                        {
+                            id: 1009,
+                            subject: 'Cooking',
+                            location: 'Deira',
+                            price: 140,
+                            spaces: 5,
+                            icon: 'fas fa-utensils'
+                        },
+                        {
+                            id: 1010,
+                            subject: 'Drama',
+                            location: 'Deira',
+                            price: 95,
+                            spaces: 5,
+                            icon: 'fas fa-masks-theater'
+                        }
+                    ]
                 }
             });
 
