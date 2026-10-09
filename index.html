@@ -12,17 +12,37 @@
         <div id="app">
             <header>
                 <h1>SkillSpace</h1>
+                <button v-on:click="toggleCart" v-bind:disabled="cartItemCount === 0 && showLessons">
+                    <span class="fas fa-cart-plus" aria-hidden="true"></span>
+                    {{ showLessons ? 'Cart' : 'Back to Lessons' }} ({{ cartItemCount }})
+                </button>
             </header>
             <main>
-                <!-- Display each lesson from the list -->
-                <div v-for="lesson in lessons" v-bind:key="lesson.id">
-                    <h2>
-                        <span v-bind:class="lesson.icon" aria-hidden="true"></span>
-                        <span v-text="lesson.subject"></span>
-                    </h2>
-                    <p>Location: {{ lesson.location }}</p>
-                    <p>Price: AED {{ lesson.price }}</p>
-                    <p>Available Spaces: {{ lesson.spaces }}</p>
+                <div v-if="showLessons">
+                    <!-- Display each lesson from the list -->
+                    <div v-for="lesson in lessons" v-bind:key="lesson.id">
+                        <h2>
+                            <span v-bind:class="lesson.icon" aria-hidden="true"></span>
+                            <span v-text="lesson.subject"></span>
+                        </h2>
+                        <p>Location: {{ lesson.location }}</p>
+                        <p>Price: AED {{ lesson.price }}</p>
+                        <p>Available Spaces: {{ lesson.spaces }}</p>
+                        <button v-on:click="addToCart(lesson)" v-bind:disabled="lesson.spaces === 0">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div v-else>
+                    <h2>Shopping Cart</h2>
+                    <p v-if="cartItemCount === 0">Your cart is empty.</p>
+                    <!-- Each entry represents one booked space -->
+                    <div v-for="(lesson, index) in cartLessons" v-bind:key="index">
+                        <h3 v-text="lesson.subject"></h3>
+                        <p>Location: {{ lesson.location }}</p>
+                        <p>Price: AED {{ lesson.price }}</p>
+                        <button v-on:click="removeFromCart(index)">Remove</button>
+                    </div>
                 </div>
             </main>
         </div>
@@ -30,6 +50,7 @@
             let webstore = new Vue({ // The Vue instance
                 el: '#app',
                 data: {
+                    showLessons: true,
                     // Sample lessons for the will be replaced later with data from the backend
                     lessons: [
                         {
@@ -112,7 +133,34 @@
                             spaces: 5,
                             icon: 'fas fa-masks-theater'
                         }
-                    ]
+                    ],
+                    cart: [] // Store one lesson ID for each space added to the cart
+                },
+                methods: {
+                    addToCart: function(lesson) {
+                        if (lesson.spaces > 0) {
+                            this.cart.push(lesson.id);
+                            lesson.spaces--;
+                        }
+                    },
+                    toggleCart: function() {
+                        this.showLessons = !this.showLessons;
+                    },
+                    removeFromCart: function(index) {
+                        let lesson = this.lessons.find(lesson => lesson.id === this.cart[index]);
+                        if (lesson) {
+                            this.cart.splice(index, 1);
+                            lesson.spaces++;
+                        }
+                    }
+                },
+                computed: {
+                    cartItemCount: function() {
+                        return this.cart.length;
+                    },
+                    cartLessons: function() {
+                        return this.cart.map(id => this.lessons.find(lesson => lesson.id === id));
+                    }
                 }
             });
 
