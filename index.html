@@ -43,6 +43,66 @@
                         <p>Price: AED {{ lesson.price }}</p>
                         <button v-on:click="removeFromCart(index)">Remove</button>
                     </div>
+                    <h2>Checkout</h2>
+                    <p>
+                        <label for="firstName"><strong>First Name:</strong></label>
+                        <input id="firstName" v-model.trim="order.firstName" type="text">
+                    </p>
+                    <p>
+                        <label for="lastName"><strong>Last Name:</strong></label>
+                        <input id="lastName" v-model.trim="order.lastName" type="text">
+                    </p>
+                    <p>
+                        <label for="phone"><strong>Phone:</strong></label>
+                        <input id="phone" v-model.trim="order.phone" type="tel" inputmode="numeric">
+                    </p>
+                    <p>
+                        <label for="address"><strong>Address:</strong></label>
+                        <input id="address" v-model="order.address" type="text">
+                    </p>
+                    <p>
+                        <label for="city"><strong>City:</strong></label>
+                        <input id="city" v-model="order.city" type="text">
+                    </p>
+                    <p>
+                        <label for="state"><strong>State:</strong></label>
+                        <select id="state" v-model="order.state">
+                            <option disabled value="">State</option>
+                            <option v-for="(state, key) in states" v-bind:key="key" v-bind:value="state">
+                                {{ key }}
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="zip"><strong>Zip/Postal Code:</strong></label>
+                        <input id="zip" v-model.number="order.zip" type="number">
+                    </p>
+                    <p>
+                        <input type="checkbox" id="gift" v-model="order.gift"
+                            v-bind:true-value="order.sendGift"
+                            v-bind:false-value="order.dontSendGift">
+                        <label for="gift">Ship As Gift?</label>
+                    </p>
+                    <p>
+                        <input type="radio" id="home" value="Home" v-model="order.method">
+                        <label for="home">Home</label>
+                        <input type="radio" id="business" value="Business" v-model="order.method">
+                        <label for="business">Business</label>
+                    </p>
+                    <h2>Order Information</h2>
+                    <p>First Name: {{ order.firstName }}</p>
+                    <p>Last Name: {{ order.lastName }}</p>
+                    <p>Phone: {{ order.phone }}</p>
+                    <p>Address: {{ order.address }}</p>
+                    <p>City: {{ order.city }}</p>
+                    <p>State: {{ order.state }}</p>
+                    <p>Zip: {{ order.zip }}</p>
+                    <p>Gift? {{ order.gift }}</p>
+                    <p>Method: {{ order.method }}</p>
+                    <p>First and last names must contain letters only. Phone must contain numbers only.</p>
+                    <button v-on:click="submitForm" v-bind:disabled="!canCheckout">
+                        Checkout
+                    </button>
                 </div>
             </main>
         </div>
@@ -134,7 +194,26 @@
                             icon: 'fas fa-masks-theater'
                         }
                     ],
-                    cart: [] // Store one lesson ID for each space added to the cart
+                    cart: [], // Store one lesson ID for each space added to the cart
+                    order: {
+                        firstName: '',
+                        lastName: '',
+                        phone: '',
+                        address: '',
+                        city: '',
+                        zip: '',
+                        state: '',
+                        method: 'Home',
+                        gift: 'Do not send as a gift',
+                        sendGift: 'Send as a gift',
+                        dontSendGift: 'Do not send as a gift'
+                    },
+                    states: {
+                        AL: 'Alabama',
+                        AZ: 'Arizona',
+                        CA: 'California',
+                        NV: 'Nevada'
+                    }
                 },
                 methods: {
                     addToCart: function(lesson) {
@@ -152,6 +231,12 @@
                             this.cart.splice(index, 1);
                             lesson.spaces++;
                         }
+                    },
+                    submitForm: function() {
+                        if (this.canCheckout) {
+                            // Temporary confirmation until the backend is connected
+                            alert('Order submitted!');
+                        }
                     }
                 },
                 computed: {
@@ -160,6 +245,12 @@
                     },
                     cartLessons: function() {
                         return this.cart.map(id => this.lessons.find(lesson => lesson.id === id));
+                    },
+                    canCheckout: function() {
+                        return this.cartItemCount > 0 &&
+                            /^[A-Za-z]+$/.test(this.order.firstName) &&
+                            /^[A-Za-z]+$/.test(this.order.lastName) &&
+                            /^[0-9]+$/.test(this.order.phone);
                     }
                 }
             });
