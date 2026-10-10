@@ -2,9 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title> SkillSpace </title>
         <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js">  </script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" />
+        <link rel="stylesheet" href="style.css">
 
     </head>
     <body>
@@ -19,242 +21,105 @@
             </header>
             <main>
                 <div v-if="showLessons">
-                    <!-- Display each lesson from the list -->
-                    <div v-for="lesson in lessons" v-bind:key="lesson.id">
-                        <h2>
-                            <span v-bind:class="lesson.icon" aria-hidden="true"></span>
-                            <span v-text="lesson.subject"></span>
-                        </h2>
-                        <p>Location: {{ lesson.location }}</p>
-                        <p>Price: AED {{ lesson.price }}</p>
-                        <p>Available Spaces: {{ lesson.spaces }}</p>
-                        <button v-on:click="addToCart(lesson)" v-bind:disabled="lesson.spaces === 0">
-                            Add to Cart
-                        </button>
+                    <h2>Explore lessons</h2>
+                    <p class="intro">Find your next skill and book a space to get started.</p>
+                    <div class="lesson-grid">
+                        <!-- Display each lesson from the list -->
+                        <div class="lesson-card" v-for="lesson in lessons" v-bind:key="lesson.id">
+                            <h2>
+                                <span v-bind:class="lesson.icon" aria-hidden="true"></span>
+                                <span v-text="lesson.subject"></span>
+                            </h2>
+                            <p class="lesson-location">Location: {{ lesson.location }}</p>
+                            <p class="price">Price: AED {{ lesson.price }}</p>
+                            <p>Available Spaces: {{ lesson.spaces }}</p>
+                            <button v-on:click="addToCart(lesson)" v-bind:disabled="lesson.spaces === 0">
+                                Add to Cart
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div v-else>
-                    <h2>Shopping Cart</h2>
-                    <p v-if="cartItemCount === 0">Your cart is empty.</p>
-                    <!-- Each entry represents one booked space -->
-                    <div v-for="(lesson, index) in cartLessons" v-bind:key="index">
-                        <h3 v-text="lesson.subject"></h3>
-                        <p>Location: {{ lesson.location }}</p>
-                        <p>Price: AED {{ lesson.price }}</p>
-                        <button v-on:click="removeFromCart(index)">Remove</button>
-                    </div>
-                    <h2>Checkout</h2>
-                    <p>
-                        <label for="firstName"><strong>First Name:</strong></label>
-                        <input id="firstName" v-model.trim="order.firstName" type="text">
-                    </p>
-                    <p>
-                        <label for="lastName"><strong>Last Name:</strong></label>
-                        <input id="lastName" v-model.trim="order.lastName" type="text">
-                    </p>
-                    <p>
-                        <label for="phone"><strong>Phone:</strong></label>
-                        <input id="phone" v-model.trim="order.phone" type="tel" inputmode="numeric">
-                    </p>
-                    <p>
-                        <label for="address"><strong>Address:</strong></label>
-                        <input id="address" v-model="order.address" type="text">
-                    </p>
-                    <p>
-                        <label for="city"><strong>City:</strong></label>
-                        <input id="city" v-model="order.city" type="text">
-                    </p>
-                    <p>
-                        <label for="state"><strong>State:</strong></label>
-                        <select id="state" v-model="order.state">
-                            <option disabled value="">State</option>
-                            <option v-for="(state, key) in states" v-bind:key="key" v-bind:value="state">
-                                {{ key }}
-                            </option>
-                        </select>
-                    </p>
-                    <p>
-                        <label for="zip"><strong>Zip/Postal Code:</strong></label>
-                        <input id="zip" v-model.number="order.zip" type="number">
-                    </p>
-                    <p>
-                        <input type="checkbox" id="gift" v-model="order.gift"
-                            v-bind:true-value="order.sendGift"
-                            v-bind:false-value="order.dontSendGift">
-                        <label for="gift">Ship As Gift?</label>
-                    </p>
-                    <p>
-                        <input type="radio" id="home" value="Home" v-model="order.method">
-                        <label for="home">Home</label>
-                        <input type="radio" id="business" value="Business" v-model="order.method">
-                        <label for="business">Business</label>
-                    </p>
-                    <h2>Order Information</h2>
-                    <p>First Name: {{ order.firstName }}</p>
-                    <p>Last Name: {{ order.lastName }}</p>
-                    <p>Phone: {{ order.phone }}</p>
-                    <p>Address: {{ order.address }}</p>
-                    <p>City: {{ order.city }}</p>
-                    <p>State: {{ order.state }}</p>
-                    <p>Zip: {{ order.zip }}</p>
-                    <p>Gift? {{ order.gift }}</p>
-                    <p>Method: {{ order.method }}</p>
-                    <p>First and last names must contain letters only. Phone must contain numbers only.</p>
-                    <button v-on:click="submitForm" v-bind:disabled="!canCheckout">
-                        Checkout
-                    </button>
+                <div class="cart-view" v-else>
+                    <section class="cart-list">
+                        <h2>Shopping Cart</h2>
+                        <p v-if="cartItemCount === 0">Your cart is empty.</p>
+                        <!-- Each entry represents one booked space -->
+                        <div class="cart-item" v-for="(lesson, index) in cartLessons" v-bind:key="index">
+                            <h3 v-text="lesson.subject"></h3>
+                            <p>Location: {{ lesson.location }}</p>
+                            <p>Price: AED {{ lesson.price }}</p>
+                            <button class="secondary" v-on:click="removeFromCart(index)">Remove</button>
+                        </div>
+                    </section>
+                    <section class="checkout-panel">
+                        <h2>Checkout</h2>
+                        <div class="checkout-fields">
+                            <p>
+                                <label for="firstName"><strong>First Name:</strong></label>
+                                <input class="checkout-input" id="firstName" v-model.trim="order.firstName" type="text">
+                            </p>
+                            <p>
+                                <label for="lastName"><strong>Last Name:</strong></label>
+                                <input class="checkout-input" id="lastName" v-model.trim="order.lastName" type="text">
+                            </p>
+                            <p>
+                                <label for="phone"><strong>Phone:</strong></label>
+                                <input class="checkout-input" id="phone" v-model.trim="order.phone" type="tel" inputmode="numeric">
+                            </p>
+                            <p>
+                                <label for="address"><strong>Address:</strong></label>
+                                <input class="checkout-input" id="address" v-model="order.address" type="text">
+                            </p>
+                            <p>
+                                <label for="city"><strong>City:</strong></label>
+                                <input class="checkout-input" id="city" v-model="order.city" type="text">
+                            </p>
+                            <p>
+                                <label for="state"><strong>State:</strong></label>
+                                <select class="checkout-input" id="state" v-model="order.state">
+                                    <option disabled value="">State</option>
+                                    <option v-for="(state, key) in states" v-bind:key="key" v-bind:value="state">
+                                        {{ key }}
+                                    </option>
+                                </select>
+                            </p>
+                            <p>
+                                <label for="zip"><strong>Zip/Postal Code:</strong></label>
+                                <input class="checkout-input" id="zip" v-model.number="order.zip" type="number">
+                            </p>
+                            <p class="choice-row">
+                                <input type="checkbox" id="gift" v-model="order.gift"
+                                    v-bind:true-value="order.sendGift"
+                                    v-bind:false-value="order.dontSendGift">
+                                <label for="gift">Ship As Gift?</label>
+                            </p>
+                            <p class="choice-row">
+                                <input type="radio" id="home" value="Home" v-model="order.method">
+                                <label for="home">Home</label>
+                                <input type="radio" id="business" value="Business" v-model="order.method">
+                                <label for="business">Business</label>
+                            </p>
+                        </div>
+                        <div class="order-summary">
+                            <h3>Order Information</h3>
+                            <p>First Name: {{ order.firstName }}</p>
+                            <p>Last Name: {{ order.lastName }}</p>
+                            <p>Phone: {{ order.phone }}</p>
+                            <p>Address: {{ order.address }}</p>
+                            <p>City: {{ order.city }}</p>
+                            <p>State: {{ order.state }}</p>
+                            <p>Zip: {{ order.zip }}</p>
+                            <p>Gift? {{ order.gift }}</p>
+                            <p>Method: {{ order.method }}</p>
+                        </div>
+                        <p class="form-hint">First and last names must contain letters only. Phone must contain numbers only.</p>
+                        <button class="checkout-button" v-on:click="submitForm" v-bind:disabled="!canCheckout">
+                            Checkout
+                        </button>
+                    </section>
                 </div>
             </main>
         </div>
-        <script type="text/javascript">
-            let webstore = new Vue({ // The Vue instance
-                el: '#app',
-                data: {
-                    showLessons: true,
-                    // Sample lessons for the will be replaced later with data from the backend
-                    lessons: [
-                        {
-                            id: 1001,
-                            subject: 'Mathematics',
-                            location: 'Dubai Knowledge Park',
-                            price: 100,
-                            spaces: 5,
-                            icon: 'fas fa-calculator'
-                        },
-                        {
-                            id: 1002,
-                            subject: 'English',
-                            location: 'Al Barsha',
-                            price: 80,
-                            spaces: 5,
-                            icon: 'fas fa-book'
-                        },
-                        {
-                            id: 1003,
-                            subject: 'Science',
-                            location: 'Dubai Marina',
-                            price: 120,
-                            spaces: 5,
-                            icon: 'fas fa-flask'
-                        },
-                        {
-                            id: 1004,
-                            subject: 'Coding',
-                            location: 'Dubai Knowledge Park',
-                            price: 150,
-                            spaces: 5,
-                            icon: 'fas fa-code'
-                        },
-                        {
-                            id: 1005,
-                            subject: 'Art',
-                            location: 'Jumeirah',
-                            price: 90,
-                            spaces: 5,
-                            icon: 'fas fa-palette'
-                        },
-                        {
-                            id: 1006,
-                            subject: 'Music',
-                            location: 'Al Barsha',
-                            price: 110,
-                            spaces: 5,
-                            icon: 'fas fa-music'
-                        },
-                        {
-                            id: 1007,
-                            subject: 'Photography',
-                            location: 'Dubai Marina',
-                            price: 130,
-                            spaces: 5,
-                            icon: 'fas fa-camera'
-                        },
-                        {
-                            id: 1008,
-                            subject: 'Chess',
-                            location: 'Jumeirah',
-                            price: 70,
-                            spaces: 5,
-                            icon: 'fas fa-chess'
-                        },
-                        {
-                            id: 1009,
-                            subject: 'Cooking',
-                            location: 'Deira',
-                            price: 140,
-                            spaces: 5,
-                            icon: 'fas fa-utensils'
-                        },
-                        {
-                            id: 1010,
-                            subject: 'Drama',
-                            location: 'Deira',
-                            price: 95,
-                            spaces: 5,
-                            icon: 'fas fa-masks-theater'
-                        }
-                    ],
-                    cart: [], // Store one lesson ID for each space added to the cart
-                    order: {
-                        firstName: '',
-                        lastName: '',
-                        phone: '',
-                        address: '',
-                        city: '',
-                        zip: '',
-                        state: '',
-                        method: 'Home',
-                        gift: 'Do not send as a gift',
-                        sendGift: 'Send as a gift',
-                        dontSendGift: 'Do not send as a gift'
-                    },
-                    states: {
-                        AL: 'Alabama',
-                        AZ: 'Arizona',
-                        CA: 'California',
-                        NV: 'Nevada'
-                    }
-                },
-                methods: {
-                    addToCart: function(lesson) {
-                        if (lesson.spaces > 0) {
-                            this.cart.push(lesson.id);
-                            lesson.spaces--;
-                        }
-                    },
-                    toggleCart: function() {
-                        this.showLessons = !this.showLessons;
-                    },
-                    removeFromCart: function(index) {
-                        let lesson = this.lessons.find(lesson => lesson.id === this.cart[index]);
-                        if (lesson) {
-                            this.cart.splice(index, 1);
-                            lesson.spaces++;
-                        }
-                    },
-                    submitForm: function() {
-                        if (this.canCheckout) {
-                            // Temporary confirmation until the backend is connected
-                            alert('Order submitted!');
-                        }
-                    }
-                },
-                computed: {
-                    cartItemCount: function() {
-                        return this.cart.length;
-                    },
-                    cartLessons: function() {
-                        return this.cart.map(id => this.lessons.find(lesson => lesson.id === id));
-                    },
-                    canCheckout: function() {
-                        return this.cartItemCount > 0 &&
-                            /^[A-Za-z]+$/.test(this.order.firstName) &&
-                            /^[A-Za-z]+$/.test(this.order.lastName) &&
-                            /^[0-9]+$/.test(this.order.phone);
-                    }
-                }
-            });
-
-        </script>
+        <script src="app.js"></script>
     </body>
 </html>
